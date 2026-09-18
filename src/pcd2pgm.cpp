@@ -14,6 +14,8 @@
 
 #include "pcd2pgm/pcd2pgm.hpp"
 
+#include <stdexcept>
+
 #include "pcl/common/transforms.h"
 #include "pcl/filters/radius_outlier_removal.h"
 #include "pcl/io/pcd_io.h"
@@ -37,7 +39,7 @@ Pcd2PgmNode::Pcd2PgmNode(const rclcpp::NodeOptions & options) : Node("pcd2pgm", 
 
   if (pcl::io::loadPCDFile<pcl::PointXYZ>(pcd_file_, *pcd_cloud_) == -1) {
     RCLCPP_ERROR(get_logger(), "Couldn't read file: %s", pcd_file_.c_str());
-    return;
+    throw std::runtime_error("Failed to load PCD file: " + pcd_file_);
   }
 
   RCLCPP_INFO(get_logger(), "Initial point cloud size: %lu", pcd_cloud_->points.size());
